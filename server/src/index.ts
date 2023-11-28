@@ -4,15 +4,12 @@ import { buildSchema } from 'type-graphql';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { WilderResolver } from './resolver/WilderResolver';
 import { datasource } from './db';
-import { GradeResolver } from './resolver/GradeResolver';
-import Skill from './entity/Skill';
-import { SkillResolver } from './resolver/SkillResolver';
 
 async function start(): Promise<void> {
   await datasource.initialize();
 
   const schema = await buildSchema({
-    resolvers: [WilderResolver, GradeResolver, SkillResolver],
+    resolvers: [WilderResolver],
   });
 
   const server = new ApolloServer({
