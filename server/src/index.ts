@@ -3,20 +3,7 @@ import { ApolloServer } from '@apollo/server';
 import { buildSchema } from 'type-graphql';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { WilderResolver } from './resolver/WilderResolver';
-import { DataSource } from 'typeorm';
-import Wilder from './entity/Wilder';
-
-export const datasource = new DataSource({
-  type: 'postgres',
-  host: 'db',
-  port: 5432,
-  username: 'postgres',
-  password: 'postgres',
-  database: 'postgres',
-  synchronize: true,
-  entities: [Wilder],
-  logging: ['error'],
-});
+import { datasource } from './db';
 
 async function start(): Promise<void> {
   await datasource.initialize();
