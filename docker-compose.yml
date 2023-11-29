@@ -18,7 +18,17 @@ services:
     environment:
       DB_HOST: db
     build: './server'
+    expose:
+      - 4000
     ports:
       - 4000:4000
     volumes:
       - ./server/src:/app/src
+  client:
+    build: './client'
+    ports:
+      - 3000:3000
+    volumes:
+      - type: bind
+        source: ./client/src
+        target: /app/app
