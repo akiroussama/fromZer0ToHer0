@@ -29,11 +29,11 @@ class GradeResolver {
 
   @Mutation(() => Boolean)
   async addVoteToGrade(@Arg('data') input: GradeInput): Promise<boolean> {
-    const grade = await datasource.getRepository(Grade).save({
-      wilderId: input.wilderId,
-      skillId: input.skillId,
-      votes: input.votes,
-    });
+    const gradeData = new Grade();
+    gradeData.wilderId = parseInt(input.wilderId);
+    gradeData.skillId = parseInt(input.skillId);
+    gradeData.votes = parseInt(input.votes) || 0;
+    const grade = await datasource.getRepository(Grade).save(gradeData);
     return grade ? true : false;
   }
 }
