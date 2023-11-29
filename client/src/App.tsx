@@ -1,33 +1,20 @@
-import { useState } from 'react';
 import './App.css';
-import { gql, useQuery } from '@apollo/client';
-
-const GET_WILDERS = gql`
-  query GetWilders {
-    wilders {
-        id
-        name
-    }
-  }
-`;
+import Home from './screens/Home';
+import { Routes, Route } from 'react-router-dom';
+import WilderDetails from './screens/WilderDetails';
+import Header from './components/Header';
 function App() {
-  const { loading, error, data } = useQuery(GET_WILDERS);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
-
   return (
-    <div>
-      {data.wilders.map(({ id, name }) => (
-        <div key={id}>
-          <h3>{name}</h3>
-          <br />
-          <b>Hello Wilder !</b>
-          <p>{id}</p>
-          <br />
-        </div>
-      ))}
-    </div>
+    <>
+      <Header />
+      <main className='container pb-8 bg-cream'>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/wilders/:id' element={<WilderDetails />} />
+        </Routes>
+      </main>
+      <div> FOOTER </div>
+    </>
   );
 }
 
