@@ -31,7 +31,7 @@ export class UserResolver {
     if (
       user === null ||
       !user.hashedPassword ||
-      !(await verify(password, user.hashedPassword))
+      !(await verify(user.hashedPassword, password))
     )
       throw new Error('invalid credentials');
 
