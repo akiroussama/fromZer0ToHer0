@@ -9,6 +9,20 @@ import jwt from 'jsonwebtoken';
 import env from '../environement';
 @Resolver(User)
 class UserResolver {
+  @Query(() => [User])
+  async users(): Promise<User[]> {
+    return await datasource.getRepository(User).find();
+  }
+
+  // method send if user exist or not by his email
+  @Query(() => Boolean)
+  async isUserExist(@Arg('email') email: string): Promise<boolean> {
+    const user = await datasource
+      .getRepository(User)
+      .findOne({ where: { email } });
+    if (user === null || user === undefined) return false;
+    return true;
+  }
   // createuser et login resolver
   @Mutation(() => User)
   async createUser(@Arg('data') data: UserInput): Promise<User> {
