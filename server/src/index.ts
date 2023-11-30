@@ -8,7 +8,6 @@ import Skill from './entity/Skill';
 import SkillResolver from './resolver/SkillResolver';
 import Grade from './entity/Grade';
 import GradeResolver from './resolver/GradeResolver';
-import ContextType from './utils/ContextType';
 import jwt from 'jsonwebtoken';
 import env from './environment';
 import User from './entity/User';

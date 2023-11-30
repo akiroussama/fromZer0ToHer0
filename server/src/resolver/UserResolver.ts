@@ -4,7 +4,6 @@ import { UserInput } from '../input/UserInput';
 import User from '../entity/User';
 import jwt from 'jsonwebtoken';
 import env from '../environment';
-import ContextType from '../utils/ContextType';
 import { hash, verify } from 'argon2';
 @Resolver(User)
 export class UserResolver {
@@ -23,10 +22,7 @@ export class UserResolver {
   }
 
   @Query(() => String)
-  async login(
-    @Arg('data') { email, password }: UserInput,
-    @Ctx() ctx: ContextType
-  ): Promise<string> {
+  async login(@Arg('data') { email, password }: UserInput): Promise<string> {
     console.log('login started, email', email, 'password', password);
     const user = await datasource
       .getRepository(User)
@@ -43,10 +39,5 @@ export class UserResolver {
     const token = jwt.sign({ userId: user.id }, env.JWT_PRIVATE_KEY);
     console.log('token', token);
     return token;
-  }
-
-  @Mutation(() => String)
-  async logout(@Ctx() ctx: ContextType) {
-    return 'OK';
   }
 }
