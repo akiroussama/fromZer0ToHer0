@@ -8,12 +8,13 @@ import Skill from './entity/Skill';
 import SkillResolver from './resolver/SkillResolver';
 import Grade from './entity/Grade';
 import GradeResolver from './resolver/GradeResolver';
+import UserResolver from './resolver/UserResolver';
 
 async function start(): Promise<void> {
   await datasource.initialize();
 
   const schema = await buildSchema({
-    resolvers: [WilderResolver, SkillResolver, GradeResolver],
+    resolvers: [WilderResolver, SkillResolver, GradeResolver, UserResolver],
   });
 
   const server = new ApolloServer({
