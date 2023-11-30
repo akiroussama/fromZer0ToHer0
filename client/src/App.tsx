@@ -16,6 +16,7 @@ function App() {
 
   const handleLogout = () => {
     // Perform logout logic here
+    localStorage.setItem('token', ''); // Clear token
     navigate('/login'); // Redirect to login page after logout
   };
 
