@@ -7,15 +7,24 @@ export default function Header() {
     <header>
       <h1>Wilder BOOK 📕</h1>
       <nav>
-        <NavLink exact to={'/'} activeClassName='active'>
+        <NavLink
+          to={'/home'}
+          className={(navData) => (navData.isActive ? 'active' : '')}
+        >
           {' '}
           ALL WILDERS{' '}
         </NavLink>
-        <NavLink to={'/wilders/:id'} activeClassName='active'>
+        <NavLink
+          to={'/wilders/:id'}
+          className={(navData) => (navData.isActive ? 'active' : '')}
+        >
           {' '}
           Wilder details{' '}
         </NavLink>
-        <NavLink to={'/login'} activeClassName='active'>
+        <NavLink
+          to={'/login'}
+          className={(navData) => (navData.isActive ? 'active' : '')}
+        >
           {' '}
           Login{' '}
         </NavLink>
