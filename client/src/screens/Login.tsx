@@ -12,22 +12,24 @@ import { gql } from '@apollo/client';
 //         }
 // `;
 import AuthService from '../graphql/queries/Login';
+const LOGIN = gql`
+  query LOGIN($password: String!, $email: String!) {
+    login(password: $password, email: $email)
+  }
+`;
 export default function Login() {
   const [email, setEmail] = useState('akir@yellow.fr');
   const [password, setPassword] = useState('Yellow2023*');
 
-  const [seConnecter, { data, error }] = useLazyQuery(AuthService.LOGIN, {
-    variables: {
-      data: {
-        email,
-        password,
-      },
-    },
+  const [seConnecter, { data, error }] = useLazyQuery(LOGIN, {
+    variables: { email, password },
   });
   let navigate = useNavigate();
   if (data) {
     console.log('data from query', data.login);
-    localStorage.setItem('token', data.login.token);
+    if (data.login === null || data.login === undefined)
+      return console.log('error from query', error);
+    else localStorage.setItem('token', data.login);
     navigate('/');
   }
   if (error) {

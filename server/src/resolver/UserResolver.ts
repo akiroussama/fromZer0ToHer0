@@ -1,43 +1,59 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import * as argon2 from 'argon2';
+import * as jwt from 'jsonwebtoken';
+
+import { Arg, Mutation, Query, Resolver, Authorized } from 'type-graphql';
 import { datasource } from '../db';
-import { UserInput } from '../input/UserInput';
 import User from '../entity/User';
-import jwt from 'jsonwebtoken';
-import env from '../environment';
-import { hash, verify } from 'argon2';
-@Resolver(User)
-export class UserResolver {
-  @Mutation(() => User)
-  async createUser(@Arg('data') data: UserInput): Promise<User> {
-    const exisitingUser = await datasource
-      .getRepository(User)
-      .findOne({ where: { email: data.email } });
+@Resolver()
+class UserResolver {
+  @Authorized()
+  @Query(() => [User])
+  async getAllUsers(): Promise<User[]> {
+    const user = await datasource.getRepository(User).find();
+    if (user) {
+      return user;
+    } else {
+      return [];
+    }
+  }
 
-    if (exisitingUser) throw new Error('EMAIL_ALREADY_EXISTS');
-
-    const hashedPassword = await hash(data.password);
-    return await datasource
-      .getRepository(User)
-      .save({ ...data, hashedPassword });
+  @Mutation(() => String)
+  async createUser(
+    @Arg('email') email: string,
+    @Arg('password') password: string
+  ): Promise<String> {
+    const user = new User();
+    user.email = email;
+    /* Un nouvel utilisateur est créé et son mot de passe est haché à l'aide de la bibliothèque argon2,
+ qui est une bibliothèque de hachage de mot de passe sécurisée. */
+    user.hashedPassword = await argon2.hash(password);
+    await datasource.getRepository(User).save(user);
+    return 'user created';
   }
 
   @Query(() => String)
-  async login(@Arg('data') { email, password }: UserInput): Promise<string> {
-    console.log('login started, email', email, 'password', password);
+  async login(
+    @Arg('email') email: string,
+    @Arg('password') password: string
+  ): Promise<String> {
     const user = await datasource
       .getRepository(User)
-      .findOne({ where: { email } });
-    console.log('user', user);
-    if (
-      user === null ||
-      !user.hashedPassword ||
-      !(await verify(user.hashedPassword, password))
-    )
-      throw new Error('invalid credentials');
-
-    // https://www.npmjs.com/package/jsonwebtoken
-    const token = jwt.sign({ userId: user.id }, env.JWT_PRIVATE_KEY);
-    console.log('token', token);
-    return token;
+      .findOneByOrFail({ email });
+    if (!user) return 'error';
+    if (!user.hashedPassword) return 'error';
+    try {
+      if (await argon2.verify(user.hashedPassword, password)) {
+        /* Si le mot de passe est valide, un token JWT est créé et renvoyé au client. */
+        const token = jwt.sign({ email }, 'supersecretkey');
+        return token;
+      } else {
+        return 'error';
+      }
+    } catch (err) {
+      console.log(err);
+      return 'error';
+    }
   }
 }
+
+export default UserResolver;

@@ -11,44 +11,35 @@ import GradeResolver from './resolver/GradeResolver';
 import jwt from 'jsonwebtoken';
 import env from './environment';
 import User from './entity/User';
-import { UserResolver } from './resolver/UserResolver';
+import UserResolver from './resolver/UserResolver';
+
+interface MyContext {
+  token?: String;
+}
 async function start(): Promise<void> {
   await datasource.initialize();
 
-  const schema = await buildSchema({
-    resolvers: [WilderResolver, SkillResolver, GradeResolver, UserResolver],
-    authChecker: async ({ context }) => {
-      console.log('authChecker context', context);
+  const typeGraphQLgeneratedSchema = await buildSchema({
+    resolvers: [UserResolver, WilderResolver, SkillResolver, GradeResolver],
+    //  une fonction qui vérifie si un utilisateur est authentifié ou non.
+    authChecker: ({ context }) => {
       console.log('context from authchecker', context);
       if (context.email !== undefined) {
         return true;
       } else {
         return false;
       }
-      //   try {
-      //     let decoded;
-      //     // https://www.npmjs.com/package/jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback
-      //     if (token) decoded = jwt.verify(token, env.JWT_PRIVATE_KEY);
-      //     if (typeof decoded === 'object') context.jwtPayload = decoded;
-      //   } catch (err) {}
-
-      //   let user;
-      //   if (context.jwtPayload)
-      //     user = await datasource
-      //       .getRepository(User)
-      //       .findOne({ where: { id: context.jwtPayload.userId } });
-
-      //   if (user !== null) context.currentUser = user;
-
-      //   if (!context.currentUser) return false;
-      //   return roles.length === 0 || roles.includes(context.currentUser.role);
     },
   });
-  interface ContextType {
-    token?: String;
-  }
-  const server = new ApolloServer<ContextType>({
-    schema,
+  const server = new ApolloServer<MyContext>({
+    schema: typeGraphQLgeneratedSchema,
+    /*
+    La fonction context vérifie si l'en-tête authorization est défini et n'est pas vide.
+    Si c'est le cas, elle vérifie le token JWT en utilisant la bibliothèque jsonwebtoken
+    et la clé secrète (supersecretkey).
+    Si le token est valide, le payload du token (qui contient les informations de l'utilisateur) 
+    est renvoyé et est accessible dans tous les résolveurs. Sinon, un objet vide est retourné.
+    */
   });
 
   const { url } = await startStandaloneServer(server, {
@@ -69,7 +60,7 @@ async function start(): Promise<void> {
     },
     listen: { port: 4000 },
   });
-  console.log(`🚀  Server ready at: ${url}`);
+  console.log(`🚀  Server ready at ${url}`);
 }
 
-start().catch(console.error);
+void start();
