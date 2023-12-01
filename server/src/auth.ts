@@ -8,6 +8,7 @@ const repository = datasource.getRepository(User);
 export interface IContext {
   token?: string | null;
   me?: User;
+  anyInfo?: string;
 }
 
 export const authChecker: AuthChecker<IContext> = async (
@@ -28,7 +29,9 @@ export const authChecker: AuthChecker<IContext> = async (
     if (env.JWT_PRIVATE_KEY === undefined) {
       return false;
     }
-
+    if (token === undefined) {
+      return false;
+    }
     const decodedToken: { userId: string } = jwt.verify(
       token,
       env.JWT_PRIVATE_KEY
@@ -36,6 +39,7 @@ export const authChecker: AuthChecker<IContext> = async (
     const userId = parseInt(decodedToken.userId);
     const user = await repository.findOne({ where: { id: userId } });
     console.log('###authChecker### user', user);
+    context.anyInfo = 'Yellow';
     if (user != null) {
       context.me = user;
       console.log('###authChecker### OKOKOKOK', context);

@@ -1,19 +1,27 @@
-import { Arg, Int, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
 import Wilder from '../entity/Wilder';
 import { WilderInput } from '../input/WilderInput';
 import { datasource } from '../db';
+import { IContext } from '../auth';
+import { Ctx } from 'type-graphql';
 
 @Resolver(Wilder)
 export class WilderResolver {
   // get all wilders
+  @Authorized()
   @Query(() => [Wilder])
-  async wilders(): Promise<Wilder[]> {
+  async wilders(@Ctx() context: IContext): Promise<Wilder[]> {
+    console.log('###wilders### context', context);
     return await datasource.getRepository(Wilder).find();
   }
 
   // get one wilder
+  @Authorized()
   @Query(() => Wilder)
-  async getWilderById(@Arg('id', () => Int) idWilder: number): Promise<Wilder> {
+  async getWilderById(
+    @Ctx() context: IContext,
+    @Arg('id', () => Int) idWilder: number
+  ): Promise<Wilder> {
     const wilder = await datasource.getRepository(Wilder).findOneBy({
       id: idWilder,
     });

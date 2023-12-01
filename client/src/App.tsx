@@ -5,7 +5,17 @@ import WilderDetails from './screens/WilderDetails';
 import Header from './components/Header';
 import Login from './screens/Login';
 import NotFound from './screens/NotFound';
+import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  console.log('location', location);
+  const notrecondition = location.pathname !== '/login';
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
   return (
     <>
       <Header />
@@ -17,6 +27,7 @@ function App() {
           <Route path='*' element={<NotFound />} />
         </Routes>
       </main>
+      {notrecondition && <button onClick={handleLogout}>Logout</button>}
       <div> FOOTER </div>
     </>
   );
