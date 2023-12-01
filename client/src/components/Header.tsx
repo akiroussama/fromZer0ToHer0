@@ -1,15 +1,34 @@
-import { NavLink } from 'react-router-dom';
 import React from 'react';
-import './Header.css';
+import { NavLink } from 'react-router-dom';
+import './Header.css'; // Import the CSS file
+
 export default function Header() {
   return (
-    <>
-      <h1>📕 Wilders Book</h1>
+    <header>
+      <h1>Wilder BOOK 📕</h1>
       <nav>
-        <NavLink to={'/'}>All Wilders</NavLink>
-        <NavLink to={'/wilders/:id'}>Wilder details</NavLink>
-        <NavLink to={'/login'}>Login</NavLink>
+        <NavLink
+          to={'/'}
+          className={(navData) => (navData.isActive ? 'active' : '')}
+        >
+          {' '}
+          ALL WILDERS{' '}
+        </NavLink>
+        <NavLink
+          to={'/wilders/:id'}
+          className={(navData) => (navData.isActive ? 'active' : '')}
+        >
+          {' '}
+          Wilder details{' '}
+        </NavLink>
+        <NavLink
+          to={'/login'}
+          className={(navData) => (navData.isActive ? 'active' : '')}
+        >
+          {' '}
+          Login{' '}
+        </NavLink>
       </nav>
-    </>
+    </header>
   );
 }
