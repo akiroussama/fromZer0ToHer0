@@ -19,7 +19,24 @@ class UserResolver {
     const hashedPassword = await hash(data.password);
     return await datasource
       .getRepository(User)
-      .save({ email: data.email, hashedPassword });
+      .save({ email: data.email, hashedPassword, roles: ['USER'] });
+  }
+
+  // update user role to admin
+  @Mutation(() => User)
+  async grantAdminToUser(@Arg('id') id: number): Promise<User> {
+    const user = await datasource
+      .getRepository(User)
+      .findOne({ where: { id } });
+    if (user === undefined || user === null) throw new Error('User not found');
+    user.roles = ['ADMIN'];
+    return await datasource.getRepository(User).save(user);
+  }
+
+  // lister les users
+  @Query(() => [User])
+  async users(): Promise<User[]> {
+    return await datasource.getRepository(User).find();
   }
 
   @Query(() => String)

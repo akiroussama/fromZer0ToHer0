@@ -8,7 +8,7 @@ const repository = datasource.getRepository(User);
 export interface IContext {
   token?: string | null;
   me?: User;
-  anyInfo?: string;
+  roles?: string[];
 }
 
 export const authChecker: AuthChecker<IContext> = async (
@@ -19,6 +19,9 @@ export const authChecker: AuthChecker<IContext> = async (
   // here we can read the user from context
   // and check his permission in the db against the `roles` argument
   // that comes from the `@Authorized` decorator, eg. ["ADMIN", "MODERATOR"]
+  console.log('###authChecker### roles', roles);
+  console.log('###authChecker### root', root);
+  console.log('###authChecker### args', args);
   const token = context.token;
   console.log('###authChecker### token', token);
   if (token === null) {
@@ -39,11 +42,12 @@ export const authChecker: AuthChecker<IContext> = async (
     const userId = parseInt(decodedToken.userId);
     const user = await repository.findOne({ where: { id: userId } });
     console.log('###authChecker### user', user);
-    context.anyInfo = 'Yellow';
     if (user != null) {
       context.me = user;
+      context.roles = user.roles;
       console.log('###authChecker### OKOKOKOK', context);
-      return true;
+      // grant access if the roles overlap
+      return user.roles.some((role) => roles.includes(role));
     } else {
       console.log('###authChecker### KOOOOOOOO', context);
       return false;
