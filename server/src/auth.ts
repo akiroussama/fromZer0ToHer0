@@ -8,7 +8,7 @@ const repository = datasource.getRepository(User);
 export interface IContext {
   token?: string | null;
   me?: User;
-  anyInfo?: string;
+  roles?: string[];
 }
 
 export const authChecker: AuthChecker<IContext> = async (
@@ -39,11 +39,14 @@ export const authChecker: AuthChecker<IContext> = async (
     const userId = parseInt(decodedToken.userId);
     const user = await repository.findOne({ where: { id: userId } });
     console.log('###authChecker### user', user);
-    context.anyInfo = 'Yellow';
     if (user != null) {
       context.me = user;
+      context.roles = user.roles;
       console.log('###authChecker### OKOKOKOK', context);
-      return true;
+      return (
+        roles.length === 0 ||
+        roles.some((role) => context.roles?.includes(role))
+      );
     } else {
       console.log('###authChecker### KOOOOOOOO', context);
       return false;

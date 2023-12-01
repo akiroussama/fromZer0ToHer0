@@ -32,12 +32,14 @@ export class WilderResolver {
   }
 
   // create a wilder
+  @Authorized()
   @Mutation(() => Wilder)
   async createWilder(@Arg('data') data: WilderInput): Promise<Wilder> {
     return await datasource.getRepository(Wilder).save(data);
   }
 
   // delete a wilder
+  @Authorized()
   @Mutation(() => Boolean)
   async deleteWilder(@Arg('id', () => Int) idWilder: number): Promise<Boolean> {
     const result = await datasource.getRepository(Wilder).delete(idWilder);

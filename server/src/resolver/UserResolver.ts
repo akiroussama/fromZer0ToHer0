@@ -1,4 +1,4 @@
-import { Resolver } from 'type-graphql';
+import { Authorized, Resolver } from 'type-graphql';
 import User from '../entity/User';
 import { datasource } from '../db';
 import { hash, verify } from 'argon2';
@@ -7,9 +7,11 @@ import { Arg, Mutation } from 'type-graphql';
 import { Query } from 'type-graphql';
 import jwt from 'jsonwebtoken';
 import env from '../environement';
+import { RoleName } from '../entity/User';
 @Resolver(User)
 class UserResolver {
   // createuser et login resolver
+  @Authorized([RoleName.ADMIN])
   @Mutation(() => User)
   async createUser(@Arg('data') data: UserInput): Promise<User> {
     const existingUser = await datasource
@@ -19,7 +21,7 @@ class UserResolver {
     const hashedPassword = await hash(data.password);
     return await datasource
       .getRepository(User)
-      .save({ email: data.email, hashedPassword });
+      .save({ email: data.email, hashedPassword, roles: ['USER'] });
   }
 
   @Query(() => String)

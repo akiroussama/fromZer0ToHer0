@@ -14,11 +14,18 @@ import UserResolver from './resolver/UserResolver';
 import { authChecker } from './auth';
 import { IContext } from './auth';
 import env from './environement';
+import AuthResolver from './resolver/AuthResolver';
 async function start(): Promise<void> {
   await datasource.initialize();
 
   const schema = await buildSchema({
-    resolvers: [WilderResolver, SkillResolver, GradeResolver, UserResolver],
+    resolvers: [
+      WilderResolver,
+      SkillResolver,
+      GradeResolver,
+      UserResolver,
+      AuthResolver,
+    ],
     authChecker,
   });
 

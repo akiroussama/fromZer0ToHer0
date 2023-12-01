@@ -28,6 +28,13 @@ export default function Header() {
           {' '}
           Login{' '}
         </NavLink>
+        <NavLink
+          to={'/isadmin'}
+          className={(navData) => (navData.isActive ? 'active' : '')}
+        >
+          {' '}
+          Admin Test{' '}
+        </NavLink>
       </nav>
     </header>
   );
