@@ -1,8 +1,8 @@
-import { Authorized, Field, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { OneToMany } from 'typeorm';
 import Grade from './Grade';
-
+import { Authorized } from 'type-graphql';
 @Entity()
 @ObjectType()
 class Wilder {
@@ -10,6 +10,7 @@ class Wilder {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Authorized()
   @Field()
   @Column({ length: 100 })
   name?: string;

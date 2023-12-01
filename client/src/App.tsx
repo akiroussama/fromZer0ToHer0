@@ -1,34 +1,40 @@
 import './App.css';
+import Footer from './components/Footer';
+import Header from './components/Header';
 import Home from './screens/Home';
 import { Routes, Route } from 'react-router-dom';
 import WilderDetails from './screens/WilderDetails';
-import Header from './components/Header';
 import Login from './screens/Login';
-import NotFound from './screens/NotFound';
+import NotFoundPage from './screens/NotFoundPage';
 import { useNavigate } from 'react-router-dom';
+
 import { useLocation } from 'react-router-dom';
+
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
-  console.log('location', location);
-  const notrecondition = location.pathname !== '/login';
+
   const handleLogout = () => {
+    // Perform logout logic here
     localStorage.removeItem('token');
-    navigate('/login');
+    navigate('/login'); // Redirect to login page after logout
   };
+
   return (
     <>
       <Header />
-      <main className='container pb-8 bg-cream'>
+      <main>
         <Routes>
-          <Route path='/login' element={<Login />} />
           <Route path='/' element={<Home />} />
           <Route path='/wilders/:id' element={<WilderDetails />} />
-          <Route path='*' element={<NotFound />} />
+          <Route path='*' element={<NotFoundPage />} />
+          <Route path='/login' element={<Login />} />
         </Routes>
       </main>
-      {notrecondition && <button onClick={handleLogout}>Logout</button>}
-      <div> FOOTER </div>
+      {location.pathname !== '/login' && (
+        <button onClick={handleLogout}>Logout</button>
+      )}
+      <Footer />
     </>
   );
 }

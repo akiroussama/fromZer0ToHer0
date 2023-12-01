@@ -23,7 +23,7 @@ export default function Login() {
       return console.log('Email ou mot de passe incorrect');
     if (data.login === undefined) return console.log('undefined token');
     localStorage.setItem('token', data.login);
-    navigate('/wilders/1');
+    navigate('/');
   }
   if (error) {
     console.log('error from query', error);
