@@ -12,7 +12,7 @@ export class AuthResolver {
     };
   }
 
-  @Authorized(['USER', 'ADMIN'])
+  @Authorized()
   @Query()
   authedQuery(): string {
     return 'Authorized users only!';

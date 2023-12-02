@@ -29,7 +29,7 @@ export default function Header() {
           Login{' '}
         </NavLink>
         <NavLink
-          to={'/admin'}
+          to={'/isadmin'}
           className={(navData) => (navData.isActive ? 'active' : '')}
         >
           {' '}

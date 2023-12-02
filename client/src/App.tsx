@@ -9,7 +9,7 @@ import NotFoundPage from './screens/NotFoundPage';
 import { useNavigate } from 'react-router-dom';
 
 import { useLocation } from 'react-router-dom';
-import AdminTest from './screens/AdminTest';
+import IsAdmin from './screens/IsAdmin';
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,7 +29,7 @@ function App() {
           <Route path='/wilders/:id' element={<WilderDetails />} />
           <Route path='*' element={<NotFoundPage />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/admin' element={<AdminTest />} />
+          <Route path='/isadmin' element={<IsAdmin />} />
         </Routes>
       </main>
       {location.pathname !== '/login' && (

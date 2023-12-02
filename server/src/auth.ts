@@ -47,7 +47,9 @@ export const authChecker: AuthChecker<IContext> = async (
       context.roles = user.roles;
       console.log('###authChecker### OKOKOKOK', context);
       // grant access if the roles overlap
-      return user.roles.some((role) => roles.includes(role));
+      return (
+        roles.length == 0 || user.roles.some((role) => roles.includes(role))
+      );
     } else {
       console.log('###authChecker### KOOOOOOOO', context);
       return false;
